@@ -1,6 +1,6 @@
 'use strict';
 /**
- * Write the unit tests for your transction processor functions here
+ * Mocha Unit Tests
  */
 
 const AdminConnection = require('composer-admin').AdminConnection;
@@ -81,46 +81,6 @@ describe('CrowdStarter#' + namespace, () => {
             return businessNetworkConnection.connect(adminCardName);
         });
     });
-
-    /*describe('Pledge()', () => {
-        it('should change the balance and info of backer and project', () => {
-            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-
-            // Create participants
-            const user = factory.newResource(namespace, 'User', 'Pylonight');
-
-            // Create assets
-            const asset = factory.newResource(namespace, assetType, 'ASSET_001');
-            asset.value = 'old-value';
-
-            // Create a transaction to change the asset's value property
-            const changeAssetValue = factory.newTransaction(namespace, 'ChangeAssetValue');
-            changeAssetValue.relatedAsset = factory.newRelationship(namespace, assetType, asset.$identifier);
-            changeAssetValue.newValue = 'new-value';
-
-            let assetRegistry;
-
-            return businessNetworkConnection.getAssetRegistry(namespace + '.' + assetType).then(registry => {
-                assetRegistry = registry;
-                // Add the asset to the appropriate asset registry
-                return registry.add(asset);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.User');
-            }).then(userRegistry => {
-                // Add the user to the appropriate participant registry
-                return userRegistry.add(user);
-            }).then(() => {
-                // Submit the transaction
-                return businessNetworkConnection.submitTransaction(changeAssetValue);
-            }).then(registry => {
-                // Get the asset
-                return assetRegistry.get(asset.$identifier);
-            }).then(newAsset => {
-                // Assert that the asset has the new value property
-                newAsset.value.should.equal(changeAssetValue.newValue);
-            });
-        });
-    });*/
 
     describe('Pledge()', () => {
         it('Alice pledges to Odin Sphere', () => {
