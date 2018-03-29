@@ -1,5 +1,5 @@
 /**
- * Crowdfunding platform network
+ * Data model for a crowdfunding platform network
  */
 
 namespace org.crowdstarter.pylonia
@@ -19,15 +19,22 @@ participant Creator extends User {
   --> Project[] createdProjects
 }
 
+enum ProjectState {
+  o ACTIVE
+  o CLOSED
+}
+
 asset Project identified by projectId {
   o String projectId
   o String title
   o String description
   o Double goal
-  o Double fund
+  o Double balance
   o DateTime releaseDate
   o DateTime periodInDays
+  o ProjectState state
   --> Creator creator
+  --> Backer[] backers
 }
 
 transaction Pledge {
