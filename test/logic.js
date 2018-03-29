@@ -8,6 +8,7 @@ const BusinessNetworkConnection = require('composer-client').BusinessNetworkConn
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
 const IdCard = require('composer-common').IdCard;
 const MemoryCardStore = require('composer-common').MemoryCardStore;
+console.log(MemoryCardStore);
 
 const path = require('path');
 
@@ -217,7 +218,7 @@ describe('CrowdStarter#' + namespace, () => {
                     thisProject.pledges.length.should.equal(1);
                     thisProject.pledge[0].value.should.equal(5000);
                     thisProject.pledge[0].backer.firstName.should.equal('Alice');
-                })
+                });
         });
     });
 });
