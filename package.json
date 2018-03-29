@@ -2,34 +2,19 @@
   "engines": {
     "composer": "^0.16.0"
   },
-  "name": "basic-sample-network",
-  "version": "0.1.14",
-  "description": "The Hello World of Hyperledger Composer samples",
-  "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
-  "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
+  "name": "crowdstarter",
+  "version": "0.0.1",
+  "description": "Example business network that helps content producers raise funding for creative projects.",
   "scripts": {
-    "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/basic-sample-network.bna",
-    "pretest": "npm run lint",
-    "lint": "eslint .",
-    "postlint": "npm run licchk",
-    "licchk": "license-check",
-    "postlicchk": "npm run doc",
-    "doc": "jsdoc --pedantic --recurse -c jsdoc.json",
-    "test-inner": "mocha -t 0 --recursive && cucumber-js",
-    "test-cover": "nyc npm run test-inner",
-    "test": "npm run test-inner"
+    "test": "mocha --recursive"
   },
+  "author": "Pylonight",
+  "email": "pylonight@gmail.com",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperledger/composer-sample-networks.git"
+    "url": "https://github.com/pylonight/CrowdStarter.git"
   },
-  "keywords": [
-    "sample",
-    "composer",
-    "composer-network"
-  ],
-  "author": "Hyperledger Composer",
-  "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
