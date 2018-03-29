@@ -11,6 +11,6 @@ This example business network defines:
 `Project`
 
 **Transactions:**
-`Pledge` `Refund` `Goal`
+`Pledge` `Close`
 
 More details coming...

@@ -14,9 +14,8 @@ const path = require('path');
 require('chai').should();
 
 const namespace = 'org.crowdstarter.pylonia';
-const assetType = 'SampleAsset';
 
-describe('#' + namespace, () => {
+describe('CrowdStarter#' + namespace, () => {
     // In-memory card store for testing so cards are not persisted to the file system
     const cardStore = new MemoryCardStore();
     let adminConnection;
@@ -83,14 +82,14 @@ describe('#' + namespace, () => {
         });
     });
 
-    describe('ChangeAssetValue()', () => {
-        it('should change the value property of ' + assetType + ' to newValue', () => {
+    describe('Pledge()', () => {
+        it('should change the balance and info of backer and project', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-            // Create a user participant
+            // Create participants
             const user = factory.newResource(namespace, 'User', 'Pylonight');
 
-            // Create the asset
+            // Create assets
             const asset = factory.newResource(namespace, assetType, 'ASSET_001');
             asset.value = 'old-value';
 
@@ -123,4 +122,102 @@ describe('#' + namespace, () => {
         });
     });
 
+    describe('Pledge()', () => {
+        it('should change the balance and info of backer and project', () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // Create participants
+            const backer = factory.newResource(namespace, 'Backer', 'alice@gmail.com');
+            backer.firstName = 'Alice';
+            backer.lastName = 'Heart'
+            backer.balance = 10000;
+
+            const creator = factory.newResource(namespace, 'Creator', 'vanilla@va.jp');
+            creator.firstName = 'Vanilla';
+            creator.lastName = 'Ware';
+            creator.balance = 1000;
+
+            // Create assets
+            const project = factory.newResource(namespace, 'Project', 'Proj0001');
+            project.title = 'Odin Sphere';
+            project.description = '2D';
+            project.goal = 100000;
+            project.balance = 0;
+            project.state = 'ACTIVE';
+            project.creator = factory.newRelationship(namespace, 'Creator', creator.$identifier);
+
+            // Create a transaction to change the asset's value property
+            const pledge = factory.newTransaction(namespace, 'Pledge');
+            pledge.value = 5000;
+            pledge.backedProject = factory.newRelationship(namespace, 'Project', project.$identifier);
+            pledge.backer = factory.newRelationship(namespace, 'Backer', backer.$identifier);
+
+            let assetRegistry;
+
+            return businessNetworkConnection.getAssetRegistry(namespace + '.' + assetType).then(registry => {
+                assetRegistry = registry;
+                // Add the asset to the appropriate asset registry
+                return registry.add(asset);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.User');
+            }).then(userRegistry => {
+                // Add the user to the appropriate participant registry
+                return userRegistry.add(user);
+            }).then(() => {
+                // Submit the transaction
+                return businessNetworkConnection.submitTransaction(changeAssetValue);
+            }).then(registry => {
+                // Get the asset
+                return assetRegistry.get(asset.$identifier);
+            }).then(newAsset => {
+                // Assert that the asset has the new value property
+                newAsset.value.should.equal(changeAssetValue.newValue);
+            });
+
+            let creatorRegistryGlobal;
+            let backerRegistryGlobal;
+            let projectRegistryGlobal;
+
+            return businessNetworkConnection.getParticipantRegistry(namespace + '.Creator')
+                .then((creatorRegistry) => {
+                    creatorRegistryGlobal = creatorRegistry;
+                    return creatorRegistry.add(creator);
+                })
+                .then(() => {
+                    return businessNetworkConnection.getParticipantRegistry(namespace + '.Backer');
+                })
+                .then((backerRegistry) => {
+                    backerRegistryGlobal = backerRegistry;
+                    return backerRegistry.add(backer);
+                })
+                .then(() => {
+                    return businessNetworkConnection.getAssetRegistry(namespace + '.Project');
+                })
+                .then((projectRegistry) => {
+                    projectRegistryGlobal = projectRegistry;
+                    return projectRegistry.add(project);
+                })
+                .then(() => {
+                    return businessNetworkConnection.submitTransaction(pledge);
+                })
+                .then(() => {
+                    return backerRegistryGlobal.get(backer.$identifier);
+                })
+                .then((thisBacker) => {
+                    thisBacker.balance.should.equal(5000);
+                    thisBacker.pledges.length.should.equal(1);
+                    thisBacker.pledges[0].value.should.equal(5000);
+                    thisBacker.pledges[0].backedProject.title.should.equal('Odin Sphere');
+                })
+                .then(() => {
+                    return projectRegistryGlobal.get(project.$identifier);
+                })
+                .then((thisProject) => {
+                    thisProject.balance.should.equal(5000);
+                    thisProject.pledges.length.should.equal(1);
+                    thisProject.pledge[0].value.should.equal(5000);
+                    thisProject.pledge[0].backer.firstName.should.equal('Alice');
+                })
+        });
+    });
 });

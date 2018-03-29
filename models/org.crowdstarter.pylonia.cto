@@ -12,11 +12,11 @@ abstract participant User identified by email {
 }
 
 participant Backer extends User {
-  --> Project[] backedProjects
+  o Pledge[] pledges optional
 }
 
 participant Creator extends User {
-  --> Project[] createdProjects
+  --> Project[] projects optional
 }
 
 enum ProjectState {
@@ -30,11 +30,11 @@ asset Project identified by projectId {
   o String description
   o Double goal
   o Double balance
-  o DateTime releaseDate
-  o DateTime periodInDays
+  o DateTime releaseDate optional
+  o DateTime periodInDays optional
   o ProjectState state
   --> Creator creator
-  --> Backer[] backers
+  o Pledge[] pledges optional
 }
 
 transaction Pledge {
@@ -43,10 +43,6 @@ transaction Pledge {
   --> Backer backer
 }
 
-transaction Refund {
-  --> Project backedProject
-}
-
-transaction Goal {
+transaction Close {
   --> Project backedProject
 }
