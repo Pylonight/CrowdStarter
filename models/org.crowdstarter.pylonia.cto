@@ -1,19 +1,45 @@
 /**
- * Write your model definitions here
+ * Crowdfunding platform network
  */
 
 namespace org.crowdstarter.pylonia
 
-participant User identified by email {
+abstract participant User identified by email {
   o String email
+  o String firstName
+  o String lastName
+  o Double balance
 }
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  o String value
+participant Backer extends User {
+  --> Project[] backedProjects
 }
 
-transaction ChangeAssetValue {
-  o String newValue
-  --> Asset relatedAsset
+participant Creator extends User {
+  --> Project[] createdProjects
+}
+
+asset Project identified by projectId {
+  o String projectId
+  o String title
+  o String description
+  o Double goal
+  o Double fund
+  o DateTime releaseDate
+  o DateTime periodInDays
+  --> Creator creator
+}
+
+transaction Pledge {
+  o Double value
+  --> Project backedProject
+  --> Backer backer
+}
+
+transaction Refund {
+  --> Project backedProject
+}
+
+transaction Goal {
+  --> Project backedProject
 }
