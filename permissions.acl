@@ -1,0 +1,69 @@
+/**
+ * Access Control List
+ */
+rule Creator {
+    description: "Allow the creator read access"
+    participant: "org.crowdstarter.pylonia.Creator"
+    operation: READ
+    resource: "org.crowdstarter.pylonia.*"
+    action: ALLOW
+}
+
+rule CreatorRecord {
+  description: "Allow the creator update access to own record"
+  participant(t): "org.crowdstarter.pylonia.Creator"
+  operation: UPDATE
+  resource(v): "org.crowdstarter.pylonia.Creator"
+  condition: (v.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Backer {
+    description: "Allow the backer read access"
+    participant: "org.crowdstarter.pylonia.Backer"
+    operation: READ
+    resource: "org.crowdstarter.pylonia.*"
+    action: ALLOW
+}
+
+rule BackerRecord {
+  description: "Allow the backer update access to own record"
+  participant(t): "org.crowdstarter.pylonia.Backer"
+  operation: UPDATE
+  resource(v): "org.crowdstarter.pylonia.Backer"
+  condition: (v.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule ProjectOwner {
+    description: "Allow the creator of a project total access"
+    participant(c): "org.crowdstarter.pylonia.Creator"
+    operation: ALL
+    resource(p): "org.crowdstarter.pylonia.Project"
+    condition: (p.creator.getIdentifier() == c.getIdentifier())
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
