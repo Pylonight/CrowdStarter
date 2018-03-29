@@ -6,7 +6,15 @@
   "version": "0.0.1",
   "description": "Example business network that helps content producers raise funding for creative projects.",
   "scripts": {
-    "test": "mocha --recursive"
+    "pretest": "npm run lint",
+    "lint": "eslint .",
+    "postlint": "npm run licchk",
+    "licchk": "license-check",
+    "postlicchk": "npm run doc",
+    "doc": "jsdoc --pedantic --recurse -c jsdoc.json",
+    "test-inner": "mocha -t 0 --recursive && cucumber-js",
+    "test-cover": "nyc npm run test-inner",
+    "test": "npm run test-inner"
   },
   "author": "Pylonight",
   "email": "pylonight@gmail.com",

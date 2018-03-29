@@ -8,7 +8,6 @@ const BusinessNetworkConnection = require('composer-client').BusinessNetworkConn
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
 const IdCard = require('composer-common').IdCard;
 const MemoryCardStore = require('composer-common').MemoryCardStore;
-console.log(MemoryCardStore);
 
 const path = require('path');
 
@@ -83,7 +82,7 @@ describe('CrowdStarter#' + namespace, () => {
         });
     });
 
-    describe('Pledge()', () => {
+    /*describe('Pledge()', () => {
         it('should change the balance and info of backer and project', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
@@ -121,7 +120,7 @@ describe('CrowdStarter#' + namespace, () => {
                 newAsset.value.should.equal(changeAssetValue.newValue);
             });
         });
-    });
+    });*/
 
     describe('Pledge()', () => {
         it('should change the balance and info of backer and project', () => {
@@ -152,28 +151,6 @@ describe('CrowdStarter#' + namespace, () => {
             pledge.value = 5000;
             pledge.backedProject = factory.newRelationship(namespace, 'Project', project.$identifier);
             pledge.backer = factory.newRelationship(namespace, 'Backer', backer.$identifier);
-
-            let assetRegistry;
-
-            return businessNetworkConnection.getAssetRegistry(namespace + '.' + assetType).then(registry => {
-                assetRegistry = registry;
-                // Add the asset to the appropriate asset registry
-                return registry.add(asset);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.User');
-            }).then(userRegistry => {
-                // Add the user to the appropriate participant registry
-                return userRegistry.add(user);
-            }).then(() => {
-                // Submit the transaction
-                return businessNetworkConnection.submitTransaction(changeAssetValue);
-            }).then(registry => {
-                // Get the asset
-                return assetRegistry.get(asset.$identifier);
-            }).then(newAsset => {
-                // Assert that the asset has the new value property
-                newAsset.value.should.equal(changeAssetValue.newValue);
-            });
 
             let creatorRegistryGlobal;
             let backerRegistryGlobal;
@@ -208,7 +185,6 @@ describe('CrowdStarter#' + namespace, () => {
                     thisBacker.balance.should.equal(5000);
                     thisBacker.pledges.length.should.equal(1);
                     thisBacker.pledges[0].value.should.equal(5000);
-                    thisBacker.pledges[0].backedProject.title.should.equal('Odin Sphere');
                 })
                 .then(() => {
                     return projectRegistryGlobal.get(project.$identifier);
@@ -216,8 +192,7 @@ describe('CrowdStarter#' + namespace, () => {
                 .then((thisProject) => {
                     thisProject.balance.should.equal(5000);
                     thisProject.pledges.length.should.equal(1);
-                    thisProject.pledge[0].value.should.equal(5000);
-                    thisProject.pledge[0].backer.firstName.should.equal('Alice');
+                    thisProject.pledges[0].value.should.equal(5000);
                 });
         });
     });
